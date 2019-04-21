@@ -95,11 +95,11 @@
 
   .hideSidebar {
     .sidebar-container {
-      width: 64px !important;
+      width: $sideBarHideWidth !important;
     }
 
     .main-container {
-      margin-left: 64px;
+      margin-left: $sideBarHideWidth;
     }
 
     .submenu-title-noDropdown {
@@ -111,6 +111,12 @@
         .svg-icon {
           margin-left: 20px;
         }
+      }
+    }
+
+    .el-menu {
+      & .el-menu-item {
+        padding: 0px !important;
       }
     }
 
@@ -126,6 +132,7 @@
     }
 
     .el-menu--collapse {
+      width: 0px !important;
       .el-submenu {
         &>.el-submenu__title {
           &>span {
