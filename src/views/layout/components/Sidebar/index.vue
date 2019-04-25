@@ -7,52 +7,30 @@
                 :active-text-color="variables.menuActiveText"
                 mode="vertical" :router="isRouterMode"
                 :collapse="isCollapse">
-            <el-submenu index="/eden/my">
-                <template #title>
-                    <span>我的</span>
-                </template>
-                <el-menu-item index="/eden/my/dashboard">仪表盘</el-menu-item>
-                <el-menu-item index="/eden/my/role">人物信息</el-menu-item>
-                <el-menu-item index="/eden/my/skills">技能训练</el-menu-item>
-                <el-menu-item index="/eden/my/mails">邮件</el-menu-item>
-                <el-menu-item index="/eden/my/favorites">收藏夹</el-menu-item>
-            </el-submenu>
-            <el-menu-item index="/eden/vault">
-                <span>库存</span>
-            </el-menu-item>
-            <el-menu-item index="/eden/wallet">
-                <span>钱包</span>
-            </el-menu-item>
-            <el-menu-item index="/eden/log">
-                <span>任务记录</span>
-            </el-menu-item>
-            <el-menu-item index="/eden/equipment">
-                <span>舰船装配</span>
-            </el-menu-item>
-            <el-menu-item index="/eden/industry">
-                <span>工业生产</span>
-            </el-menu-item>
-            <el-menu-item index="/eden/legion">
-                <span>军团</span>
-            </el-menu-item>
-            <el-menu-item index="/eden/map">
-                <span>星图</span>
-            </el-menu-item>
-            <el-menu-item index="/eden/planet">
-                <span>行星开发</span>
-            </el-menu-item>
+            <menu-item v-for="item in summary" v-bind:source="item" v-bind:key="item.path"
+                       v-bind:base-url="baseURL"></menu-item>
         </el-menu>
     </el-scrollbar>
 </template>
 
 <script>
-    import { mapGetters } from 'vuex'
+    import {getBookSummary} from '@/api/books'
+    import {mapGetters} from 'vuex'
     import variables from '@/styles/variables.scss'
+    import showdown from 'showdown'
+    import cheerio from 'cheerio'
+    import MenuItem from './MenuItem'
 
     export default {
+        components: {
+            MenuItem
+        },
         data: function () {
             return {
-                isRouterMode: true
+                baseURL: "",
+                isRouterMode: true,
+                summary: [],
+                summaryMap: new Map(),
             }
         },
         computed: {
@@ -62,11 +40,61 @@
             routes() {
                 return this.$router.options.routes
             },
+            bookInfo() {
+                return this.$store.state.book.info
+            },
             variables() {
                 return variables
             },
             isCollapse() {
                 return !this.sidebar.opened
+            }
+        },
+        watch: {
+            bookInfo: function (val) {
+                getBookSummary(val).then(v => {
+                    this.generateSummary(v.data)
+                })
+            },
+            '$route': function (val) {
+                this.baseURL = '/users/' + val.params.userID + '/books/' + val.params.bookID + '/'
+            },
+        },
+        created() {
+            this.baseURL = '/users/' + this.$route.params.userID + '/books/' + this.$route.params.bookID + '/'
+        },
+        methods: {
+            generateSummary(summaryContent) {
+                let converter = new showdown.Converter()
+                let html = converter.makeHtml(summaryContent)
+                const $ = cheerio.load(html)
+
+                this.summaryMap.clear()
+                this.summary.length = 0
+                this.summary.push(...this.parseSummary($))
+            },
+            parseSummary($, el) {
+                let children = []
+                let vue = this
+                let target
+                if (el !== undefined) {
+                    target = $(el).find('ul > li')
+                } else {
+                    target = $('ul > li')
+                }
+                target.each(function () {
+                    let link = $(this).find('> a').attr('href')
+                    if (link !== undefined && vue.summaryMap.has(link)) {
+                        return
+                    }
+                    children.push({
+                        title: $(this).find('> a').text(),
+                        path: link,
+                        children: vue.parseSummary($, this)
+                    })
+                    vue.summaryMap.set(link, true)
+                })
+                return children
             }
         }
     }

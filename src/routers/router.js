@@ -20,27 +20,21 @@ export default new VueRouter({
             component: () => import('@/views/login'),
         },
         {
-            name: 'userInfo',
-            path: '/users/:userID',
+            name: 'books',
+            path: '/users/:userID/books',
             component: EntryView,
             children: [
                 {
-                    name: 'default',
-                    path: "",
-                    meta: {title: '用户信息'},
-                    component: () => import('@/views/user')
-                },
-                {
                     name: 'book',
-                    path: 'books/:bookID',
+                    path: ':bookID',
                     meta: {title: '书籍信息'},
-                    component: () => import('@/views/book')
+                    component: () => import('@/views/book'),
                 },
                 {
                     name: 'bookPage',
-                    path: 'books/:bookID/*',
+                    path: ':bookID/*',
                     meta: {title: '书籍详情'},
-                    component: () => import('@/views/bookPage')
+                    component: () => import('@/views/bookPage'),
                 }
             ]
         },

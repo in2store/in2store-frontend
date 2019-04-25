@@ -11,6 +11,7 @@
 
 <script>
     import {Navbar, Sidebar, AppMain} from './components'
+    import {getBookByBookID} from '@/api/books'
 
     export default {
         name: 'Layout',
@@ -26,6 +27,9 @@
             device() {
                 return this.$store.state.app.device
             },
+            bookInfo() {
+                return this.$store.state.book.info
+            },
             classObj() {
                 return {
                     hideSidebar: !this.sidebar.opened,
@@ -35,11 +39,29 @@
                 }
             }
         },
+        watch: {
+            '$route': function (val) {
+                let bookID = val.params.bookID
+                if (this.bookInfo.bookID === undefined || this.bookInfo.bookID !== bookID) {
+                    getBookByBookID(bookID).then(v => {
+                        this.$store.dispatch('setBookInfo', v)
+                    })
+                }
+            },
+        },
         methods: {
             handleClickOutside() {
                 this.$store.dispatch('CloseSideBar', {withoutAnimation: false})
             }
-        }
+        },
+        created() {
+            let bookID = this.$route.params.bookID
+            if (this.bookInfo.bookID === undefined || this.bookInfo.bookID !== bookID) {
+                getBookByBookID(bookID).then(v => {
+                    this.$store.dispatch('setBookInfo', v)
+                })
+            }
+        },
     }
 </script>
 
