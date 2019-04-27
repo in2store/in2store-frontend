@@ -20,6 +20,16 @@ export default new VueRouter({
             component: () => import('@/views/login'),
         },
         {
+            name: 'userInfo',
+            path: '/users/:userID',
+            component: () => import('@/views/user')
+        },
+        {
+            name: 'createBook',
+            path: '/users/:userID/new/book',
+            component: () => import('@/views/createBook')
+        },
+        {
             name: 'books',
             path: '/users/:userID/books',
             component: EntryView,
