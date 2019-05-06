@@ -1,5 +1,5 @@
 <template>
-    <div :class="classObj" class="app-wrapper">
+    <div :class="classObj" class="reader-wrapper">
         <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside"/>
         <sidebar class="sidebar-container"/>
         <div class="main-container">
@@ -68,7 +68,7 @@
 <style rel="stylesheet/scss" lang="scss" scoped>
     @import "src/styles/mixin.scss";
 
-    .app-wrapper {
+    .reader-wrapper {
         @include clearfix;
         position: relative;
         height: 100%;

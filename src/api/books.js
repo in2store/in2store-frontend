@@ -9,13 +9,15 @@ export const createBook = function (params) {
     })
 }
 
-export const getBooksMeta = function (userID, status, size, offset) {
+export const getBooksMeta = function (userID, categoryKey, selected, size, offset) {
     return request({
         url: '/v0/books/0/meta',
         method: 'get',
         params: {
             userID,
-            status,
+            status: "NORMAL",
+            categoryKey,
+            selected,
             size,
             offset,
         },

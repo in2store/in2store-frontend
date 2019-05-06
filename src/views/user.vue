@@ -21,7 +21,7 @@
         methods: {
             getCurrentUserBooksMeta() {
                 let userID = this.$route.params.userID
-                getBooksMeta(userID, "", 10, 0).then(resp => {
+                getBooksMeta(userID, "", "", 10, 0).then(resp => {
                     this.books = resp.data
                 })
             }
