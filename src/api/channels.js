@@ -6,3 +6,10 @@ export const getChannels = function () {
         method: 'get',
     })
 }
+
+export const getAuthURL = function (channelID) {
+    return request({
+        url: '/v0/channels/' + channelID + '/auth',
+        method: 'get',
+    })
+}

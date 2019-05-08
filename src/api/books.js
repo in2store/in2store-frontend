@@ -24,6 +24,21 @@ export const getBooksMeta = function (userID, categoryKey, selected, size, offse
     })
 }
 
+export const getBooksMetaWithDetail = function (userID, categoryKey, selected, size, offset) {
+    return request({
+        url: '/v0/books/0/meta-full',
+        method: 'get',
+        params: {
+            userID,
+            status: "NORMAL",
+            categoryKey,
+            selected,
+            size,
+            offset,
+        },
+    })
+}
+
 export const getBookByBookID = function (bookID) {
     return request({
         url: '/v0/books/' + bookID,

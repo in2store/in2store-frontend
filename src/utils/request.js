@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {Message, MessageBox} from 'element-ui'
+import {Message} from 'element-ui'
 import store from '../store'
 import {getToken} from '@/utils/auth'
 
@@ -8,6 +8,7 @@ const service = axios.create({
     // baseURL: process.env.BASE_API, // api 的 base_uri
     baseURL: 'http://service-in2-gateway.in2store.service.profzone.net/in2-gateway', // api 的 base_uri
     timeout: 5000, // 请求超时时间
+    withCredentials: true,
 })
 service.defaults.headers.common['Content-Type'] = 'application/json'
 service.defaults.headers.get['Content-Type'] = 'application/json'

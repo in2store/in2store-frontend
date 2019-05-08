@@ -145,7 +145,7 @@
                             bookLanguage: this.form.currentBookLanguage,
                             codeLanguage: this.form.currentCodeLanguage,
                         }).then(resp => {
-                            let userID = this.$route.params.userID
+                            let userID = resp.userID
                             this.$router.push({path:'/users/' + userID + '/books/' + resp.bookID})
                         })
                     } else {

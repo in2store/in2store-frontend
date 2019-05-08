@@ -16,7 +16,19 @@
                     </div>
                     <div class="header-panel-item">
                         <el-tooltip effect="dark" content="新建书籍" placement="bottom">
-                            <el-button icon="el-icon-plus" size="small"></el-button>
+                            <el-popover placement="bottom" width="260" :v-model="popLogin">
+                                <h3>请选用一个Git服务进行登录</h3>
+                                <div v-if="loadingChannel" v-loading="loadingChannel" style="height: 100px"></div>
+                                <div v-else-if="!loadingChannel && channels.length !== 0">
+                                    <p v-for="channel in channels" :key="channel.channelID">
+                                        <el-button icon="el-icon-coin" :loading="loadingAuthURL"
+                                                   @click="redirectToAuthURL(channel.channelID)"
+                                                   style="width: 100%;font-weight: bold;">{{channel.name}}
+                                        </el-button>
+                                    </p>
+                                </div>
+                                <el-button icon="el-icon-plus" size="small" slot="reference" @click.stop="createBook"></el-button>
+                            </el-popover>
                         </el-tooltip>
                     </div>
                     <div class="header-panel-item">
@@ -27,7 +39,8 @@
                     <div class="header-panel-item">
                         <el-dropdown>
                             <el-button size="small">
-                                <img src="https://oss.love2.io/e6e093ce-568f-11e9-9766-00163e0f8adb.png?x-oss-process=style/100x100" class="avatar">
+                                <img src="https://oss.love2.io/e6e093ce-568f-11e9-9766-00163e0f8adb.png?x-oss-process=style/100x100"
+                                     class="avatar">
                                 <span style="margin-left: 20px">johnnyeven</span>
                                 <i class="el-icon-arrow-down el-icon--right"></i>
                             </el-button>
@@ -45,8 +58,48 @@
 </template>
 
 <script>
+    import {getToken} from '@/utils/auth'
+    import {getAuthURL} from '@/api/channels'
+    import {getChannels} from '@/api/channels'
+
     export default {
-        name: "index"
+        name: "index",
+        data: function () {
+            return {
+                channels: [],
+                popLogin: false,
+                loadingAuthURL: false,
+                loadingChannel: false,
+            }
+        },
+        methods: {
+            createBook() {
+                let token = getToken()
+                if (token === undefined || token === '') {
+                    this.popLogin = true
+                    this.getChannels()
+                } else {
+                    this.$router.push('/new/book')
+                }
+            },
+            getChannels() {
+                if (this.channels.length === 0) {
+                    this.loadingChannel = true
+                    getChannels().then(data => {
+                        this.channels = data
+                        this.loadingChannel = false
+                    })
+                }
+            },
+            redirectToAuthURL(channelID) {
+                this.loadingAuthURL = true
+                getAuthURL(channelID).then(resp => {
+                    window.location = resp.url
+                }).catch(() => {
+                    this.loadingAuthURL = false
+                })
+            },
+        },
     }
 </script>
 

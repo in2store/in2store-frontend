@@ -31,7 +31,7 @@ const router = new VueRouter({
         },
         {
             name: 'createBook',
-            path: '/users/:userID/new/book',
+            path: '/new/book',
             component: () => import('@/views/createBook'),
             meta: {
                 title: '创建文档 · In2.Store',

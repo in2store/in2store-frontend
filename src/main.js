@@ -5,9 +5,6 @@ import './plugins/element.js'
 import '@/styles/index.scss'
 
 import env from 'dotenv'
-import {setToken} from './utils/auth'
-
-setToken("INNER:123")
 
 Vue.config.productionTip = false
 
