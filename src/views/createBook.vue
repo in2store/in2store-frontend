@@ -42,6 +42,17 @@
                 <el-input v-model="form.bookName" placeholder="请输入书籍名称"></el-input>
             </el-form-item>
 
+            <el-form-item label="书籍分类" prop="currentCategoryKey">
+                <el-select v-model="form.currentCategoryKey" filterable placeholder="请选择书籍分类">
+                    <el-option
+                            v-for="cat in categoryKeys"
+                            :key="cat.categoryKey"
+                            :label="cat.name"
+                            :value="cat.categoryKey">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+
             <el-form-item label="简介" prop="bookComment">
                 <el-input
                         type="textarea"
@@ -76,6 +87,7 @@
             <el-form-item>
                 <el-button type="primary" @click="createBook">立即创建</el-button>
                 <el-button @click="resetForm">重置</el-button>
+                <el-button @click="$router.back(-1)">返回</el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -85,6 +97,7 @@
     import {getChannels} from '@/api/channels'
     import {getRepos, getBranches, getRepoSummary} from '@/api/repos'
     import {createBook, getBookMetas} from '@/api/books'
+    import {getCategories} from '@/api/categories'
 
     export default {
         name: "createBook",
@@ -94,6 +107,7 @@
                 reposResult: {},
                 branchesResult: {},
                 noneSummaryRepo: false,
+                categoryKeys: [],
                 bookLanguages: [],
                 codeLanguages: [],
                 form: {
@@ -102,6 +116,7 @@
                     currentBranchName: "",
                     currentSummaryPath: "",
                     bookName: "",
+                    currentCategoryKey: "",
                     bookComment: "",
                     currentBookLanguage: "",
                     currentCodeLanguage: "",
@@ -118,7 +133,10 @@
                     ],
                     bookName: [
                         {required: true, message: '请输入书籍名称', trigger: 'blur'}
-                    ]
+                    ],
+                    currentCategoryKey: [
+                        {required: true, message: '请选择书籍分类', trigger: 'blur'}
+                    ],
                 },
             }
         },
@@ -141,6 +159,7 @@
                             repoBranchName: this.form.currentBranchName,
                             summaryPath: this.form.currentSummaryPath,
                             title: this.form.bookName,
+                            categoryKey: this.form.currentCategoryKey,
                             comment: this.form.bookComment,
                             bookLanguage: this.form.currentBookLanguage,
                             codeLanguage: this.form.currentCodeLanguage,
@@ -179,6 +198,9 @@
             getBookMetas().then(data => {
                 this.bookLanguages = data.bookLanguage
                 this.codeLanguages = data.codeLanguage
+            })
+            getCategories().then(data => {
+                this.categoryKeys = data.data
             })
         }
     }

@@ -1,0 +1,11 @@
+from: node:alpine
+image: ${PROFZONE_DOCKER_REGISTRY}/${PROJECT_GROUP}/${PROJECT_NAME}:${PROJECT_VERSION}
+add:
+  ./dist: /
+run:
+  - npm install -g http-server
+expose:
+  - "8080"
+cmd:
+  - http-server
+  - /

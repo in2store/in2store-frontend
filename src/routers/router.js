@@ -6,6 +6,7 @@ import CategoryView from '@/views/category'
 Vue.use(VueRouter)
 
 const router = new VueRouter({
+    mode: 'history',
     routes: [
         {
             name: 'default',

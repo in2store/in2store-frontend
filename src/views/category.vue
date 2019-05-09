@@ -37,7 +37,9 @@
                         <el-button icon="el-icon-star-off" size="mini" round>239</el-button>
                     </div>
                 </el-card>
-                <el-card v-if="!loading && books.length === 0" shadow="never" class="book-not-found"><i class="el-icon-search"></i> 暂时没有找到文档</el-card>
+                <el-card v-if="!loading && books.length === 0" shadow="never" class="book-not-found"><i
+                        class="el-icon-search"></i> 暂时没有找到文档
+                </el-card>
             </div>
             <right-panel></right-panel>
         </div>
@@ -50,6 +52,9 @@
     import RightPanel from '@/components/RightPanel'
     import {getBooksMetaWithDetail} from '@/api/books'
     import moment from 'moment'
+    import {Loading} from 'element-ui';
+    import {authorize} from '@/api/channels'
+    import {setToken} from '@/utils/auth'
 
     export default {
         name: "category",
@@ -83,8 +88,20 @@
             },
         },
         created() {
+            if (this.$route.query.code !== undefined && this.$route.query.state !== undefined) {
+                let loadingInstance = Loading.service({
+                    fullscreen: true,
+                    text: '正在认证',
+                })
+                authorize(this.$route.query.code, this.$route.query.state).then(resp => {
+                    loadingInstance.close()
+                    setToken('INNER:' + resp.sessionID)
+                }).catch(() => {
+                    loadingInstance.close()
+                })
+            }
+            moment.locale('zh-cn')
             this.$moment = moment
-            this.$moment.locale('zh-cn')
             if (this.$route.params.categoryName === undefined) {
                 this.getBooksMeta("", "TRUE", this.offset)
             } else {

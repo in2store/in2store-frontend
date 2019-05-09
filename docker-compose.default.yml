@@ -1,0 +1,17 @@
+version: "2"
+services:
+  frontend-in2store:
+    image: ${PROFZONE_DOCKER_REGISTRY}/${PROJECT_GROUP}/${PROJECT_NAME}:${PROJECT_VERSION}
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.container.start_once: "true"
+      project.description: ${PROJECT_DESCRIPTION}
+      project.group: ${PROJECT_GROUP}
+      project.name: ${PROJECT_NAME}
+      project.version: ${PROJECT_VERSION}
+    environment:
+      BASE_API: ${BASE_API}
+    dns_search:
+      - rancher.internal
+    dns:
+      - 169.254.169.250

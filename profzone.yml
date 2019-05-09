@@ -1,0 +1,7 @@
+name: frontend-in2store
+group: in2store
+version: 0.0.0
+description: in2store 前端页面
+program_language: vue
+workflow:
+  extends: feature-pr

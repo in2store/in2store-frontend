@@ -1,0 +1,52 @@
+workspace:
+  base: /drone/workspace
+  path: /service-in2-gateway
+
+pipeline:
+  build:
+    image: node:alpine
+    pull: true
+    commands:
+      - npm run build
+    when:
+      branch: [ feature/*, test/feature/*, demo/feature/*, master ]
+  ship:
+    image: node:alpine
+    pull: true
+    commands:
+      - env
+      - profzone ship --push
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    when:
+      branch: [ feature/*, test/feature/*, demo/feature/*, master ]
+  deploy-staging:
+    image: node:alpine
+    pull: true
+    commands:
+      - profzone deploy --env STAGING
+    when:
+      branch: [ feature/* ]
+  deploy-test:
+    image: node:alpine
+    pull: true
+    commands:
+      - profzone deploy --env TEST
+    when:
+      branch: [ test/feature/* ]
+  deploy-demo:
+    image: node:alpine
+    pull: true
+    commands:
+      - profzone deploy --env DEMO
+    when:
+      branch: [ demo/feature/* ]
+  deploy-master:
+    image: node:alpine
+    pull: true
+    commands:
+      - profzone deploy --env STAGING
+    #      - profzone deploy --env TEST
+    #      - profzone deploy --env DEMO
+    when:
+      branch: [ master ]
