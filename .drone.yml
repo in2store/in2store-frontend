@@ -4,7 +4,7 @@ workspace:
 
 pipeline:
   build:
-    image: node:alpine
+    image: node
     pull: true
     commands:
       - npm install
@@ -12,7 +12,7 @@ pipeline:
     when:
       branch: [ feature/*, test/feature/*, demo/feature/*, master ]
   ship:
-    image: node:alpine
+    image: node
     pull: true
     commands:
       - env
@@ -22,28 +22,28 @@ pipeline:
     when:
       branch: [ feature/*, test/feature/*, demo/feature/*, master ]
   deploy-staging:
-    image: node:alpine
+    image: node
     pull: true
     commands:
       - profzone deploy --env STAGING
     when:
       branch: [ feature/* ]
   deploy-test:
-    image: node:alpine
+    image: node
     pull: true
     commands:
       - profzone deploy --env TEST
     when:
       branch: [ test/feature/* ]
   deploy-demo:
-    image: node:alpine
+    image: node
     pull: true
     commands:
       - profzone deploy --env DEMO
     when:
       branch: [ demo/feature/* ]
   deploy-master:
-    image: node:alpine
+    image: node
     pull: true
     commands:
       - profzone deploy --env STAGING
