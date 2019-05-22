@@ -64,6 +64,12 @@ const router = new VueRouter({
             component: CategoryView,
         },
         {
+            name: 'tag',
+            path: '/tag/:tagName',
+            meta: {title: '标签 · In2.Store'},
+            component: () => import('@/views/tag'),
+        },
+        {
             name: 'notFound',
             path: '*',
             component: () => import('@/views/not-found')

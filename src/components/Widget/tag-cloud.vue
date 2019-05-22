@@ -1,27 +1,38 @@
 <template>
     <div class="widget-wrapper">
         <h3><i class="el-icon-search"></i> 热门标签</h3>
-        <div>
-            <el-tag size="small">云计算</el-tag>
-            <el-tag size="small">开发运维</el-tag>
-            <el-tag size="small">数据库</el-tag>
-            <el-tag size="small">golang</el-tag>
-            <el-tag size="small">java</el-tag>
-            <el-tag size="small">c++</el-tag>
-            <el-tag size="small">MongoDB</el-tag>
-            <el-tag size="small">redis</el-tag>
-            <el-tag size="small">php</el-tag>
-            <el-tag size="small">blockchain</el-tag>
-            <el-tag size="small">test</el-tag>
-            <el-tag size="small">production</el-tag>
-            <el-tag size="small">深度学习</el-tag>
+        <div v-if="loadingTags" v-loading="loadingTags" style="height: 100px;"></div>
+        <div v-else-if="tags.length > 0">
+            <router-link v-for="tag in tags" :key="tag.tagID" :to="'/tag/' + tag.name"><el-tag size="small">{{tag.name}}</el-tag></router-link>
         </div>
+        <el-card v-else shadow="never" class="not-found">
+            <p>暂时没有数据</p>
+        </el-card>
     </div>
 </template>
 
 <script>
+    import {getTags} from '@/api/tags'
+
     export default {
-        name: "tag-cloud"
+        name: "tag-cloud",
+        data: function () {
+            return {
+                loadingTags: false,
+                tags: [],
+            }
+        },
+        created() {
+            this.loadingTags = true
+            getTags().then(resp => {
+                if(resp !== null) {
+                    this.tags = resp
+                }
+                this.loadingTags = false
+            }).catch(() => {
+                this.loadingTags = false
+            })
+        }
     }
 </script>
 
@@ -32,6 +43,16 @@
                 .el-tag {
                     margin-left: 10px;
                     margin-top: 10px;
+                }
+                .not-found {
+                    height: 100px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    width: 100%;
+                    background: #f5f7fa;
+                    color: #909399;
+                    font-size: 18px;
                 }
             }
         }

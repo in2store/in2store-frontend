@@ -2,7 +2,9 @@
     <div class="index-wrapper">
         <top-nav></top-nav>
         <div class="container main">
-            <left-nav></left-nav>
+            <div class="sidebar-wrapper">
+                <categories></categories>
+            </div>
             <div class="main-wrapper">
                 <el-card v-if="loading" shadow="never" style="height: 100px" v-loading="loading"></el-card>
                 <el-card v-else v-for="book in books" :key="book.bookID" shadow="hover" style="margin-bottom: 20px">
@@ -37,19 +39,25 @@
                         <el-button icon="el-icon-star-off" size="mini" round>239</el-button>
                     </div>
                 </el-card>
-                <el-card v-if="!loading && books.length === 0" shadow="never" class="book-not-found"><i
+                <el-card v-if="!loading && books.length === 0" shadow="never" class="not-found"><i
                         class="el-icon-search"></i> 暂时没有找到文档
                 </el-card>
             </div>
-            <right-panel></right-panel>
+            <div class="right-wrapper">
+                <explore-widget></explore-widget>
+                <tag-cloud></tag-cloud>
+                <most-stars></most-stars>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
     import TopNav from '@/components/TopNav'
-    import LeftNav from '@/components/LeftNav'
-    import RightPanel from '@/components/RightPanel'
+    import ExploreWidget from '@/components/Widget/explore'
+    import TagCloud from '@/components/Widget/tag-cloud'
+    import MostStars from '@/components/Widget/most-stars'
+    import Categories from '@/components/Widget/categories'
     import {getBooksMetaWithDetail} from '@/api/books'
     import moment from 'moment'
     import {Loading} from 'element-ui';
@@ -58,7 +66,13 @@
 
     export default {
         name: "category",
-        components: {TopNav, LeftNav, RightPanel},
+        components: {
+            TopNav,
+            ExploreWidget,
+            TagCloud,
+            MostStars,
+            Categories,
+        },
         data: function () {
             return {
                 books: [],
@@ -113,7 +127,28 @@
 
 <style rel="stylesheet/scss" lang="scss">
     .index-wrapper {
+
+        .right-wrapper {
+            position: absolute;
+            top: 61px;
+            right: 0;
+            width: 230px;
+            padding-top: 20px;
+
+            .widget-wrapper {
+                margin-bottom: 30px;
+            }
+        }
+
         > .container {
+
+            .sidebar-wrapper {
+                position: fixed;
+                background-color: #AAAAAA;
+                width: 140px;
+                top: 61px;
+            }
+
             &.main {
                 padding-top: 61px;
 
@@ -127,7 +162,7 @@
     }
 
     .main-wrapper {
-        .book-not-found {
+        .not-found {
             height: 100px;
             display: flex;
             justify-content: center;
